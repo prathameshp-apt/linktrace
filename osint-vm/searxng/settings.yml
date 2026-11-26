@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------------
+# SearXNG settings for the OSINT VM's local search backend.
+# This instance is bound to 127.0.0.1 only (see docker-compose.yml) and
+# used by exactly one person on one machine, so a few defaults meant
+# for public multi-user instances are relaxed here on purpose:
+#   - limiter is off (it exists to stop abuse from many strangers;
+#     there's only one local caller here)
+#   - json format is turned on (off by default for security on public
+#     instances, but required for LinkTrace to read results as data
+#     instead of an HTML page)
+# ---------------------------------------------------------------------
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "LinkTrace OSINT search"
+  privacypolicy_url: false
+  donation_url: false
+  contact_url: false
+  enable_metrics: false
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  formats:
+    - html
+    - json
+
+# Fail fast instead of hanging: one slow/blocked engine (Google and Brave
+# often are) must not hold up the whole answer.
+outgoing:
+  request_timeout: 4.0
+  max_request_timeout: 8.0
+  pool_connections: 50
+  pool_maxsize: 20
+  enable_http2: true
+
+server:
+  # Generated once for this VM image -- regenerate per deployment with:
+  #   python3 -c "import secrets; print(secrets.token_hex(32))"
+  secret_key: "e231614f6d01b330c4531b8515ee62fb49f7af26832f44a551308bc7cc7be227"
+  base_url: "http://127.0.0.1:8888/"
+  limiter: false
+  image_proxy: true
+  method: "GET"
+  default_http_headers:
+    X-Content-Type-Options: nosniff
+    X-Download-Options: noopen
+    X-Robots-Tag: noindex, nofollow
+    Referrer-Policy: no-referrer
+    Access-Control-Allow-Origin: "*"
+
+ui:
+  static_use_hash: true
+
+# Engines particularly useful for OSINT-style lookups, on top of
+# SearXNG's already-enabled general web engines (google, bing,
+# duckduckgo, brave, etc. via use_default_settings above).
+# All of these are general-purpose web/code/reference/archive search --
+# nothing here queries breach, credential, or hash-cracking sources; see
+# osint-vm/README.md for why that category is intentionally left out.
+engines:
+  - name: github
+    disabled: false
+  - name: gitlab
+    disabled: false
+  - name: wikidata
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: crossref
+    disabled: false
+  - name: arxiv
+    disabled: false
+  - name: stackoverflow
+    disabled: false
+  - name: startpage
+    disabled: false
+  - name: yandex
+    disabled: false
+  - name: mojeek
+    disabled: false
+  - name: brave
+    disabled: false
+  # Tor / .onion engines need a Tor proxy that isn't configured here -- skip
+  # them so they stop failing at every start.
+  - name: ahmia
+    inactive: true
+  - name: torch
+    inactive: true

@@ -1,0 +1,99 @@
+/* Simplified look: neutral dark surfaces, one purple accent, quiet chrome.
+   Loaded after style.css, so it re-themes through the same variables. */
+:root{
+  --bg:#0b0b0e; --surface:#121216; --surface-2:#121216; --surface-3:#1b1b21; --surface-sunken:#0b0b0e;
+  --border:#25252c; --border-strong:#33333c;
+  --text:#ececf1; --text-dim:#8d8d99; --text-faint:#62626d;
+  --accent:#8b7cf6; --accent-2:#b3a8ff; --accent-dim:rgba(139,124,246,.16); --accent-border:rgba(139,124,246,.5);
+  --on-accent:#0d0a1f; --radius:7px; --radius-lg:9px; --shadow-color:0 0% 0%;
+}
+
+/* ---- top bar: brand, board search, one menu ---- */
+.bar{flex-wrap:nowrap;height:42px;padding:0 12px;gap:10px;box-shadow:none;background:var(--bg)}
+.brand{font-weight:600;font-size:13px;letter-spacing:-.1px;margin-right:6px}
+.search-wrap{flex:0 1 280px}
+.search-wrap input{height:28px;background:var(--surface);border-color:var(--border)}
+.bar .workspace-btn{margin-left:auto}
+.menu-wrap{position:relative;margin-left:auto}
+.bar .workspace-btn + .menu-wrap{margin-left:0}
+.menu-wrap .icon-btn{background:transparent;border:0;color:var(--text-dim);box-shadow:none}
+.menu-wrap .icon-btn:hover{color:var(--text);background:var(--surface-3)}
+.menu{position:absolute;right:0;top:34px;min-width:176px;padding:4px;z-index:60;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.menu[hidden]{display:none}
+.menu button{display:block;width:100%;text-align:left;background:transparent;border:0;box-shadow:none;
+  padding:7px 10px;border-radius:6px;color:var(--text)}
+.menu button:hover:not(:disabled){background:var(--surface-3)}
+.menu button:disabled{color:var(--text-faint)}
+.menu button.danger{color:var(--danger)}
+.menu hr{border:0;border-top:1px solid var(--border);margin:4px 2px}
+
+/* ---- canvas ---- */
+.view{background-color:var(--bg);background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1px)}
+.threads path{stroke:#4b4b57;stroke-width:1.25;opacity:1}
+.threads path:hover{stroke:var(--accent-2)}
+.threads path.wire-live{stroke:var(--accent);filter:none;stroke-width:1.5}
+.threads path.conf-corroborated{stroke:var(--ok);opacity:.8}
+
+/* ---- node cards: icon, small label above the value ---- */
+.node{width:190px;min-height:0;padding:9px 12px 9px 9px;display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);border-left:1px solid var(--border);
+  border-radius:var(--radius-lg);box-shadow:none}
+.node:not(.dragging):hover{transform:none;border-color:var(--border-strong);box-shadow:none}
+.node.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.node-icon{flex:none;width:30px;height:30px;border-radius:7px;background:var(--surface-3);
+  display:grid;place-items:center}
+.node-icon .icon{width:16px;height:16px;opacity:.9}
+.node .txt{min-width:0;flex:1}
+.node .kind{display:block;font-size:10.5px;line-height:1.2;color:var(--text-faint);
+  text-transform:none;letter-spacing:0;font-weight:400}
+.node .label{font-size:12.5px;font-weight:500;line-height:1.3;margin-top:1px;overflow-wrap:anywhere}
+.node .meta{position:absolute;top:7px;right:8px;margin:0;font-size:0;line-height:0}
+.node .meta .dot{display:block;width:6px;height:6px;border-radius:50%;background:var(--s,var(--accent))}
+
+/* ---- bottom floating toolbar ---- */
+.dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;
+  display:flex;align-items:center;gap:4px;padding:5px;
+  background:var(--surface);border:1px solid var(--border);border-radius:11px;
+  box-shadow:0 10px 28px rgba(0,0,0,.5)}
+.dock .tool-seg{display:contents}
+.dock button{width:32px;height:32px;padding:0;display:grid;place-items:center;background:transparent;
+  border:0;border-radius:7px;color:var(--text-dim);box-shadow:none}
+.dock button:hover{background:var(--surface-3);color:var(--text)}
+.dock button.active,.dock button[aria-pressed="true"],.dock button[aria-expanded="true"]{background:var(--accent-dim);color:var(--accent-2)}
+.dock .primary{background:var(--accent);color:var(--on-accent);font-size:18px;line-height:1;font-weight:600}
+.dock .primary:hover{background:var(--accent-2);color:var(--on-accent)}
+.dock input{width:150px;height:32px;background:var(--bg);border-color:var(--border)}
+.dock-sep{width:1px;height:20px;background:var(--border);margin:0 3px}
+.dock .ls-toggle{border-radius:7px}
+
+/* ---- search: slide-in panel on the right ---- */
+.livesearch{position:static}
+.ls-panel{position:fixed;top:42px;right:0;bottom:0;left:auto;width:min(440px,100vw);max-height:none;
+  border-radius:0;border-width:0 0 0 1px;box-shadow:-12px 0 32px rgba(0,0,0,.35);z-index:50;
+  animation:ls-slide .18s ease-out}
+.ls-panel[hidden]{display:none}
+.ls-panel.xl{width:min(860px,100vw)}
+@keyframes ls-slide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.ls-head-sub,.ls-head-icon{display:none}
+.ls-section-note{display:none}
+.ls-head{padding:10px 12px}
+
+/* ---- inspector, minimap, misc ---- */
+.side{width:330px;background:var(--surface)}
+.minimap{width:auto;padding:4px;right:12px;bottom:12px;background:var(--surface);opacity:.9}
+.minimap-title{display:none}
+.minimap-head{margin-bottom:4px}
+.empty::before{display:none}
+.empty h2{font-weight:500}
+
+@media (prefers-reduced-motion:reduce){.ls-panel{animation:none}}
+@media (max-width:640px){.dock input{width:96px}.search-wrap{flex:1 1 auto}}
+
+/* ---- refinements ---- */
+.node{width:200px}
+.node .label{font-family:inherit;overflow-wrap:break-word;word-break:normal}
+.minimap{right:12px;bottom:12px}
+.minimap canvas{width:150px;height:92px}
+.minimap-ctl button{background:transparent;color:var(--text-dim)}
